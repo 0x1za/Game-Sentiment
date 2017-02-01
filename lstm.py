@@ -1,10 +1,8 @@
 # Import dependencies
 import tflearn
-import numpy as np
 import pandas as pd
 from tflearn.data_utils import pad_sequences, to_categorical
 from sklearn.model_selection import train_test_split
-import tensorflow as tf
 
 #Load the gaming dataset
 df = pd.read_pickle('ign.pkl')
@@ -34,21 +32,21 @@ testX = pad_sequences(testX, dtype='str', maxlen=100, padding='post', truncating
 trainY = to_categorical(trainY, nb_classes=2)
 testY = to_categorical(testY, nb_classes=2)
 
-print testY
-#
-# # Network building
-# net = tflearn.input_data([None, 100])
-# net = tflearn.embedding(net, input_dim=10000, output_dim=128)
-# net = tflearn.lstm(net, 128, dropout=0.8)
-# net = tflearn.fully_connected(net, 2, activation='softmax')
-# net = tflearn.regression(net, optimizer='adam', learning_rate=0.001,
-#                          loss='categorical_crossentropy')
-#
-# # Training
-# col = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES)
-# for x in col:
-#     tf.add_to_collection(tf.GraphKeys.VARIABLES, x)
-#
-# model = tflearn.DNN(net, tensorboard_verbose=0)
-# model.fit(trainX, trainY, validation_set=(testX, testY), show_metric=True,
-#           batch_size=32)
+
+
+# Network building
+net = tflearn.input_data([None, 100])
+net = tflearn.embedding(net, input_dim=10000, output_dim=128)
+net = tflearn.lstm(net, 128, dropout=0.8)
+net = tflearn.fully_connected(net, 2, activation='softmax')
+net = tflearn.regression(net, optimizer='adam', learning_rate=0.001,
+                         loss='categorical_crossentropy')
+
+# Training
+col = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES)
+for x in col:
+    tf.add_to_collection(tf.GraphKeys.VARIABLES, x)
+
+model = tflearn.DNN(net, tensorboard_verbose=0)
+model.fit(trainX, trainY, validation_set=(testX, testY), show_metric=True,
+          batch_size=32)
